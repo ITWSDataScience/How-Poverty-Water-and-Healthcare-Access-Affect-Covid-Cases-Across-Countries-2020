@@ -44,3 +44,10 @@ hist(jan23covid$handwashing_facilities)
 summary(jan23covid$population_density)
 hist(jan23covid$population_density)
 
+#current_exp
+summary(current_exp$Value)
+hist(current_exp$Value)
+
+#dom_gen_exp
+summary(dom_gen_exp$Value)
+hist(dom_gen_exp$Value)
