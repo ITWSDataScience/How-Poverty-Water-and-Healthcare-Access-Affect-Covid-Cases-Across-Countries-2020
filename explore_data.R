@@ -64,4 +64,6 @@ plot(jan23covid$extreme_poverty, dec9covid$total_deaths/dec9covid$total_cases)
 plot(jan23covid$extreme_poverty, dec9covid$tests_per_case)
 # Tests per thousand
 plot(jan23covid$extreme_poverty, dec9covid$total_tests_per_thousand)
+# Positive rate
+plot(jan23covid$extreme_poverty, dec9covid$positive_rate)
 
