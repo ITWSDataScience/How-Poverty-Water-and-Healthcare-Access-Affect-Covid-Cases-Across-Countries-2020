@@ -51,3 +51,17 @@ hist(current_exp$Value)
 #dom_gen_exp
 summary(dom_gen_exp$Value)
 hist(dom_gen_exp$Value)
+
+# ========================Poverty and Covid============================
+# Scattered graphs
+# Total cases
+plot(jan23covid$extreme_poverty, dec9covid$total_cases)
+# Total cases per million
+plot(jan23covid$extreme_poverty, dec9covid$total_cases_per_million)
+# Death rate
+plot(jan23covid$extreme_poverty, dec9covid$total_deaths/dec9covid$total_cases)
+# Tests per case
+plot(jan23covid$extreme_poverty, dec9covid$tests_per_case)
+# Tests per thousand
+plot(jan23covid$extreme_poverty, dec9covid$total_tests_per_thousand)
+
