@@ -3,7 +3,7 @@ library(ggplot2)
 library(dplyr)
 
 # columns we want to look at to analyze
-cols <- c("location", "total_cases_per_million", "total_deaths_per_million", "total_tests_per_thousand", "gdp_per_capita", "hospital_beds_per_thousand", "human_development_index")
+cols <- c("location", "total_cases_per_million", "total_deaths_per_million", "total_tests_per_thousand", "gdp_per_capita", "extreme_poverty", "handwashing_facilities", "human_development_index", "population_density")
 
 # create data
 data.covid <- dec9covid[,cols]
@@ -17,4 +17,5 @@ data.covidHealth <- data.covidHealth %>% rename(dom_gov_health_exp = Value)
 plot <- ggcorrplot(cor(data.covidHealth[,-1], use="complete.obs"),type = "lower",
                    lab = TRUE,
                    ggtheme = ggplot2::theme_minimal(), tl.col="white")
-ggsave("./plots/corrplot/plot.png", width = 7, height=7)
+print(plot)
+ggsave("./plots/corrplot/plot.png", width = 5, height=5)
