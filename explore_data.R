@@ -1,5 +1,13 @@
 #Clear working space
 rm(list = ls())
+
+choose.dir <- function() {
+  system("osascript -e 'tell app \"R\" to POSIX path of (choose folder with prompt \"Choose Folder:\")' > /tmp/R_folder",
+          intern = FALSE, ignore.stderr = TRUE)
+  p <- system("cat /tmp/R_folder && rm -f /tmp/R_folder", intern = TRUE)
+  return(ifelse(length(p), p, NA))
+}
+
 #Set working directory
 setwd(choose.dir())
 
@@ -55,7 +63,10 @@ hist(dom_gen_exp$Value)
 # ========================Poverty and Covid============================
 # Scattered graphs
 # Total cases
-plot(jan23covid$extreme_poverty, dec9covid$total_cases)
+plot(jan23covid$extreme_poverty, dec9covid$total_cases,
+     main="Extreme Poverty vs. Total COVID-19 Cases",
+     xlab="Extreme Poverty in Countries",
+     ylab="Total COVID-19 Cases")
 # Total cases per million
 plot(jan23covid$extreme_poverty, dec9covid$total_cases_per_million)
 # Death rate
