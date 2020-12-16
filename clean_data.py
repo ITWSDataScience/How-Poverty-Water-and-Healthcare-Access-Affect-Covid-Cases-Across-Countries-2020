@@ -5,7 +5,9 @@ covid_data = pd.read_csv("owid-covid-data.csv")
 health_data = pd.read_csv("ExpenditureonHealth.csv")
 
 ##PREPPING COVID DATA##
-useful_covid_data = covid_data[["location", "date", "total_cases", "total_cases_per_million", "total_deaths_per_million", "extreme_poverty", "handwashing_facilities"]]
+useful_covid_data = covid_data[["location", "date", "total_cases", "total_cases_per_million",
+                                "total_deaths_per_million", "total_tests_per_thousand",
+                                "extreme_poverty", "handwashing_facilities"]]
 
 cleaned1 = useful_covid_data[useful_covid_data["total_cases"].notna()]
 
@@ -25,7 +27,8 @@ remove_health_data = useful_health_data[useful_health_data["Series"] == "Current
 prepped_health_data = remove_health_data[remove_health_data["Year"] == 2017]
 
 ##JOINING DATA FOR ANALYSIS##
-all_data = pd.concat([prepped_covid_data.set_index('location'), prepped_health_data.set_index('Region/Country/Area')], axis=1, join='inner')
+all_data = pd.concat([prepped_covid_data.set_index('location'),
+                      prepped_health_data.set_index('Region/Country/Area')], axis=1, join='inner')
 
 ##PLOT CASES PER MILLION##
 plt.plot(prepped_covid_data["extreme_poverty"], prepped_covid_data["total_cases_per_million"], "ro")
@@ -65,3 +68,8 @@ plt.ylabel("Total Deaths per Million in Countries")
 plt.title("Health Expenditure vs. Total Deaths per Million")
 plt.show()
 
+plt.plot(prepped_covid_data["total_tests_per_thousand"], prepped_covid_data["total_cases_per_million"], "ro")
+plt.xlabel("Total Tests per Thousand in Countries")
+plt.ylabel("Total Cases per Million in Countries")
+plt.title("Total Test per Thousand vs. Total Cases per Million")
+plt.show()
