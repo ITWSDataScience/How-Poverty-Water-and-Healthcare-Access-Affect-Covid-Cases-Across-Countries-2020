@@ -10,23 +10,17 @@ useful_covid_data = covid_data[["location", "date", "total_cases", "total_cases_
                                 "extreme_poverty", "handwashing_facilities"]]
 
 cleaned1 = useful_covid_data[useful_covid_data["total_cases"].notna()]
-
 cleaned2 = cleaned1[cleaned1["handwashing_facilities"].notna()]
 
-cleaned3 = cleaned2[cleaned2["total_deaths_per_million"].notna()]
-
-cleaned_covid_data = cleaned3[cleaned3["extreme_poverty"].notna()]
+cleaned_covid_data = cleaned2[cleaned2["extreme_poverty"].notna()]
 
 
 remove_world_data = cleaned_covid_data[cleaned_covid_data["location"] != "World"]
-
 prepped_covid_data = remove_world_data[remove_world_data["date"] == "2020-12-09"]
 
 ##PREPPING HEALTH DATA##
 useful_health_data = health_data[["Region/Country/Area", "Year", "Series", "Value"]]
-
 remove_health_data = useful_health_data[useful_health_data["Series"] == "Current health expenditure (% of GDP)"]
-
 prepped_health_data = remove_health_data[remove_health_data["Year"] == 2017]
 
 ##JOINING DATA FOR ANALYSIS##
@@ -48,16 +42,23 @@ def createPlot(x_val, y_val, title, xlab, ylab):
     plt.savefig("./plots/scatter/noRegression/%s.png" % title)
     plt.clf()
 
-def createRegPlot(x_val, y_val, title, xlab, ylab):
-    ### create linear regression ###
-    model = linear_model.LinearRegression().fit( np.array(x_val).reshape((-1, 1)), y_val)
-    model_preds = model.predict(np.array(x_val).reshape((-1, 1)))
+def createRegressionPlot(x_val, y_val, title, xlab, ylab):
+    x_val_reg_sample = x_val[:-10]
+    x_val_pred_sample = x_val[-10:]
+    y_val_reg_sample = y_val[:-10]
+    y_val_pred_sample = y_val[-10:]
 
+    ### CREATE LINEAR MODEL ###
+    model = linear_model.LinearRegression().fit(np.array(x_val_reg_sample).reshape((-1, 1)), y_val_reg_sample)
+    ### PREDICT YVALS ###
+    model_preds = model.predict(np.array(x_val_pred_sample).reshape((-1, 1)))
+
+    ### CREATE PLOT ###
     plt.plot(x_val, y_val, "ro")
     plt.plot(x_val,model_preds, color='blue', linewidth=2)
     plt.xlabel(xlab)
     plt.ylabel(ylab)
-    plt.title("%s\n r2 = %.2f" % (title, r2_score(y_val, model_preds)))
+    plt.title("%s\n r2 = %.2f" % (title, r2_score(y_val_pred_sample, model_preds)))
     plt.savefig("./plots/scatter/regression/%s.png" % title)
     plt.clf()
 
