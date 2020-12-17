@@ -1,15 +1,9 @@
 #Clear working space
 rm(list = ls())
-
-choose.dir <- function() {
-  system("osascript -e 'tell app \"R\" to POSIX path of (choose folder with prompt \"Choose Folder:\")' > /tmp/R_folder",
-          intern = FALSE, ignore.stderr = TRUE)
-  p <- system("cat /tmp/R_folder && rm -f /tmp/R_folder", intern = TRUE)
-  return(ifelse(length(p), p, NA))
-}
-
 #Set working directory
 setwd(choose.dir())
+
+library(ggplot2)
 
 #Read in datasets
 covid <- read.csv("owid-covid-data.csv", header=TRUE) 
@@ -42,39 +36,41 @@ dom_gen_exp <- exp2017_health[exp2017_health$Series == "Domestic general governm
 
 #extreme_poverty
 summary(jan23covid$extreme_poverty)
-hist(jan23covid$extreme_poverty)
+#hist(jan23covid$extreme_poverty)
+ggplot() + 
+  geom_histogram(aes(x=jan23covid$extreme_poverty),binwidth = 5, color="black", fill="#76D7C4", alpha = 0.5)+
+  labs(title = "Extreme Poverty", x="Percentage")+
+  theme_bw()
 
 #handwashing_facilities
 summary(jan23covid$handwashing_facilities)
-hist(jan23covid$handwashing_facilities)
+#hist(jan23covid$handwashing_facilities)
+ggplot() + 
+  geom_histogram(aes(x=jan23covid$handwashing_facilities),binwidth = 5, color="black", fill="#76D7C4", alpha = 0.5)+
+  labs(title = "Handwashing Facilities", x="Percentage")+
+  theme_bw()
 
 #population_density
 summary(jan23covid$population_density)
-hist(jan23covid$population_density)
+#hist(jan23covid$population_density)
+ggplot() + 
+  geom_histogram(aes(x=jan23covid$population_density),binwidth = 1000, color="black", fill="#76D7C4", alpha = 0.5)+
+  labs(title = "Population Density", x="Number of people per km^2")+
+  theme_bw()
 
 #current_exp
 summary(current_exp$Value)
-hist(current_exp$Value)
+#hist(current_exp$Value)
+ggplot() + 
+  geom_histogram(aes(x=current_exp$Value),binwidth = 1, color="black", fill="#76D7C4", alpha = 0.5)+
+  labs(title = "Current Health Expenditure", x="Value")+
+  theme_bw()
 
 #dom_gen_exp
 summary(dom_gen_exp$Value)
-hist(dom_gen_exp$Value)
-
-# ========================Poverty and Covid============================
-# Scattered graphs
-# Total cases
-plot(jan23covid$extreme_poverty, dec9covid$total_cases,
-     main="Extreme Poverty vs. Total COVID-19 Cases",
-     xlab="Extreme Poverty in Countries",
-     ylab="Total COVID-19 Cases")
-# Total cases per million
-plot(jan23covid$extreme_poverty, dec9covid$total_cases_per_million)
-# Death rate
-plot(jan23covid$extreme_poverty, dec9covid$total_deaths/dec9covid$total_cases)
-# Tests per case
-plot(jan23covid$extreme_poverty, dec9covid$tests_per_case)
-# Tests per thousand
-plot(jan23covid$extreme_poverty, dec9covid$total_tests_per_thousand)
-# Positive rate
-plot(jan23covid$extreme_poverty, dec9covid$positive_rate)
+#hist(dom_gen_exp$Value)
+ggplot() + 
+  geom_histogram(aes(x=dom_gen_exp$Value),binwidth = 1, color="black", fill="#76D7C4", alpha = 0.5)+
+  labs(title = "Domestic General Government \nHealth Expenditure", x="Value")+
+  theme_bw()
 
