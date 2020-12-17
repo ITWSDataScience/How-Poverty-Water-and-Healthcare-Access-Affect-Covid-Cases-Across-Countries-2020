@@ -13,7 +13,10 @@ cleaned1 = useful_covid_data[useful_covid_data["total_cases"].notna()]
 
 cleaned2 = cleaned1[cleaned1["handwashing_facilities"].notna()]
 
-cleaned_covid_data = cleaned2[cleaned2["extreme_poverty"].notna()]
+cleaned3 = cleaned2[cleaned2["total_deaths_per_million"].notna()]
+
+cleaned_covid_data = cleaned3[cleaned3["extreme_poverty"].notna()]
+
 
 remove_world_data = cleaned_covid_data[cleaned_covid_data["location"] != "World"]
 
@@ -28,48 +31,58 @@ prepped_health_data = remove_health_data[remove_health_data["Year"] == 2017]
 
 ##JOINING DATA FOR ANALYSIS##
 all_data = pd.concat([prepped_covid_data.set_index('location'),
-                      prepped_health_data.set_index('Region/Country/Area')], axis=1, join='inner')
+                      prepped_health_data.set_index('Region/Country/Area')], 
+                      axis=1, join='inner')
+
+
+### REGRESSION ###
+from sklearn import datasets, linear_model
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+def createPlot(x_val, y_val, title, xlab, ylab):
+    plt.plot(x_val, y_val, "ro")
+    plt.xlabel(xlab)
+    plt.ylabel(ylab)
+    plt.title(title)
+    plt.savefig("./plots/scatter/noRegression/%s.png" % title)
+    plt.clf()
+
+def createRegPlot(x_val, y_val, title, xlab, ylab):
+    ### create linear regression ###
+    model = linear_model.LinearRegression().fit( np.array(x_val).reshape((-1, 1)), y_val)
+    model_preds = model.predict(np.array(x_val).reshape((-1, 1)))
+
+    plt.plot(x_val, y_val, "ro")
+    plt.plot(x_val,model_preds, color='blue', linewidth=2)
+    plt.xlabel(xlab)
+    plt.ylabel(ylab)
+    plt.title("%s\n r2 = %.2f" % (title, r2_score(y_val, model_preds)))
+    plt.savefig("./plots/scatter/regression/%s.png" % title)
+    plt.clf()
+
+
 
 ##PLOT CASES PER MILLION##
-plt.plot(prepped_covid_data["extreme_poverty"], prepped_covid_data["total_cases_per_million"], "ro")
-plt.xlabel("Extreme Poverty in Countries")
-plt.ylabel("Total Cases per Million in Countries")
-plt.title("Extreme Poverty vs. Total Cases per Million")
-plt.show()
+createPlot(prepped_covid_data["extreme_poverty"], prepped_covid_data["total_cases_per_million"], "Extreme Poverty vs. Total Cases per Million", "Extreme Poverty in Countries", "Extreme Poverty vs. Total Cases per Million")
+createRegPlot(prepped_covid_data["extreme_poverty"], prepped_covid_data["total_cases_per_million"], "Extreme Poverty vs. Total Cases per Million", "Extreme Poverty in Countries", "Extreme Poverty vs. Total Cases per Million")
 
-plt.plot(prepped_covid_data["handwashing_facilities"], prepped_covid_data["total_cases_per_million"], "ro")
-plt.xlabel("Handwashing Facilities in Countries")
-plt.ylabel("Total Cases per Million in Countries")
-plt.title("Handwashing Facilities vs. Total Cases per Million")
-plt.show()
+createPlot(prepped_covid_data["handwashing_facilities"], prepped_covid_data["total_cases_per_million"], "Handwashing Facilities vs. Total Cases per Million", "Handwashing Facilities in Countries", "Total Cases per Million in Countries")
+createRegPlot(prepped_covid_data["handwashing_facilities"], prepped_covid_data["total_cases_per_million"], "Handwashing Facilities vs. Total Cases per Million", "Handwashing Facilities in Countries", "Total Cases per Million in Countries")
 
-plt.plot(all_data["Value"], all_data["total_cases_per_million"], "ro")
-plt.xlabel("Health Expenditure (% of GDP) in Countries")
-plt.ylabel("Total Cases per Million in Countries")
-plt.title("Health Expenditure vs. Total Cases per Million")
-plt.show()
+createRegPlot(all_data["Value"], all_data["total_cases_per_million"], "Health Expenditure vs. Total Cases per Million", "Health Expenditure (% of GDP) in Countries", "Total Cases per Million in Countries")
+createRegPlot(all_data["Value"], all_data["total_cases_per_million"], "Health Expenditure vs. Total Cases per Million", "Health Expenditure (% of GDP) in Countries", "Total Cases per Million in Countries")
 
 ##PLOT DEATHS PER MILLION##
-plt.plot(prepped_covid_data["extreme_poverty"], prepped_covid_data["total_deaths_per_million"], "ro")
-plt.xlabel("Extreme Poverty in Countries")
-plt.ylabel("Total Deaths per Million in Countries")
-plt.title("Extreme Poverty vs. Total Deaths per Million")
-plt.show()
+createPlot(prepped_covid_data["extreme_poverty"], prepped_covid_data["total_deaths_per_million"], "Extreme Poverty vs. Total Deaths per Million", "Extreme Poverty in Countries", "Total Deaths per Million in Countries")
+createRegPlot(prepped_covid_data["extreme_poverty"], prepped_covid_data["total_deaths_per_million"], "Extreme Poverty vs. Total Deaths per Million", "Extreme Poverty in Countries", "Total Deaths per Million in Countries")
 
-plt.plot(prepped_covid_data["handwashing_facilities"], prepped_covid_data["total_deaths_per_million"], "ro")
-plt.xlabel("Handwashing Facilities in Countries")
-plt.ylabel("Total Deaths per Million in Countries")
-plt.title("Handwashing Facilities vs. Total Deaths per Million")
-plt.show()
+createPlot(prepped_covid_data["handwashing_facilities"], prepped_covid_data["total_deaths_per_million"], "Handwashing Facilities vs. Total Deaths per Million", "Handwashing Facilities in Countries", "Total Deaths per Million in Countries")
+createRegPlot(prepped_covid_data["handwashing_facilities"], prepped_covid_data["total_deaths_per_million"], "Handwashing Facilities vs. Total Deaths per Million", "Handwashing Facilities in Countries", "Total Deaths per Million in Countries")
 
-plt.plot(all_data["Value"], all_data["total_deaths_per_million"], "ro")
-plt.xlabel("Health Expenditure (% of GDP) in Countries")
-plt.ylabel("Total Deaths per Million in Countries")
-plt.title("Health Expenditure vs. Total Deaths per Million")
-plt.show()
+createPlot(all_data["Value"], all_data["total_deaths_per_million"], "Health Expenditure vs. Total Deaths per Million", "Health Expenditure (% of GDP) in Countries", "Total Deaths per Million in Countries")
+createRegPlot(all_data["Value"], all_data["total_deaths_per_million"], "Health Expenditure vs. Total Deaths per Million", "Health Expenditure (% of GDP) in Countries", "Total Deaths per Million in Countries")
 
-plt.plot(prepped_covid_data["total_tests_per_thousand"], prepped_covid_data["total_cases_per_million"], "ro")
-plt.xlabel("Total Tests per Thousand in Countries")
-plt.ylabel("Total Cases per Million in Countries")
-plt.title("Total Test per Thousand vs. Total Cases per Million")
-plt.show()
+createPlot(prepped_covid_data["total_tests_per_thousand"], prepped_covid_data["total_cases_per_million"], "Total Test per Thousand vs. Total Cases per Million", "Total Tests per Thousand in Countries", "Total Cases per Million in Countries")
+dropTests = prepped_covid_data[prepped_covid_data["total_tests_per_thousand"].notna()]
+createRegPlot(dropTests["total_tests_per_thousand"], dropTests["total_cases_per_million"], "Total Test per Thousand vs. Total Cases per Million", "Total Tests per Thousand in Countries", "Total Cases per Million in Countries")

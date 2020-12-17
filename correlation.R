@@ -18,4 +18,4 @@ plot <- ggcorrplot(cor(data.covidHealth[,-1], use="complete.obs"),type = "lower"
                    lab = TRUE,
                    ggtheme = ggplot2::theme_minimal(), tl.col="white")
 print(plot)
-ggsave("./plots/corrplot/plot.png", width = 5, height=5)
+ggsave("./plots/corrplot/plot.png", width = 8, height=8)
